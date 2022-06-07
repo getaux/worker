@@ -1,1 +1,1 @@
-# worker
+# AuctionX worker
