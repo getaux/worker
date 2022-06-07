@@ -1,0 +1,14 @@
+#!/usr/bin/env php
+<?php
+
+error_reporting(E_ALL ^ E_DEPRECATED);
+
+use Worker\App;
+
+if (!is_file(dirname(__DIR__) . '/vendor/autoload.php')) {
+    throw new LogicException('Missing dependencies. Try running "composer install"');
+}
+
+require_once dirname(__DIR__) . '/vendor/autoload.php';
+
+return new App();

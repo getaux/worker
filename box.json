@@ -1,0 +1,16 @@
+{
+  "main": "bin/worker",
+  "directories": [
+    "bin",
+    "src",
+    "vendor"
+  ],
+  "exclude-composer-files": false,
+  "exclude-dev-files": false,
+  "output": "build/auctionx-worker",
+  "compression": "GZ",
+  "compactors": [
+    "KevinGH\\Box\\Compactor\\Json",
+    "KevinGH\\Box\\Compactor\\Php"
+  ]
+}

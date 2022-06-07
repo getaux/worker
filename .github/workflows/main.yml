@@ -1,0 +1,30 @@
+name: Continuous integration
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  ci:
+    name: Continuous integration
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: "Init repository"
+        uses: actions/checkout@v2
+
+      - name: "Setup PHP"
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.1'
+          tools: composer
+
+      - name: "Install dependencies"
+        run: composer install
+
+      - name: "PHPStan"
+        run: ./vendor/bin/phpstan analyse src --level=max
+
+      - name: "Dependencies security checker"
+        uses: symfonycorp/security-checker-action@v2
