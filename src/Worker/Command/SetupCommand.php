@@ -16,6 +16,7 @@ use Symfony\Component\HttpClient\HttpClient;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 use Web3p\EthereumUtil\Util;
 use Worker\Exception\SetupException;
+use Worker\Helper\ConfigurationHelper;
 
 #[AsCommand(name: 'setup')]
 class SetupCommand extends Command
@@ -55,7 +56,12 @@ class SetupCommand extends Command
                 ]);
             $table->render();
 
-            $write = $this->writeConfiguration($apiEndpoint, $apiKey, $keys['publicKey'], $keys['privateKey']);
+            $write = ConfigurationHelper::writeConfiguration(
+                $apiEndpoint,
+                $apiKey,
+                $keys['publicKey'],
+                $keys['privateKey']
+            );
 
             if ($write) {
                 $io->success('Configuration saved! You can now run the worker to execute transfers');
@@ -176,28 +182,5 @@ class SetupCommand extends Command
     private function hideField(string $value): string
     {
         return substr($value, 0, 4) . str_repeat('*', strlen($value) - 4);
-    }
-
-    private function writeConfiguration(string $apiEndpoint, string $apiKey, mixed $publicKey, mixed $privateKey): bool
-    {
-        $credentials = [
-            'api_url' => $apiEndpoint,
-            'api_key' => $apiKey,
-            'public_key' => $publicKey,
-            'private_key' => $privateKey,
-        ];
-
-        $fileName = getenv('HOME') ? getenv('HOME') . '/.auctionx-config' : './.auctionx-config';
-
-        $handle = fopen($fileName, 'w+');
-
-        if ($handle) {
-            fwrite($handle, (string)json_encode($credentials));
-            fclose($handle);
-
-            return true;
-        } else {
-            return false;
-        }
     }
 }

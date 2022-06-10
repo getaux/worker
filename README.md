@@ -13,6 +13,10 @@
 - `composer install && composer bin box install`
 - `bin/worker # set your credentials`
 
+## Unit tests
+
+- `composer test`
+
 ## Build locally
 
 - `./vendor/bin/box build`

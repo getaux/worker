@@ -28,3 +28,6 @@ jobs:
 
       - name: "Dependencies security checker"
         uses: symfonycorp/security-checker-action@v2
+
+      - name: "Unit tests"
+        uses: composer test
