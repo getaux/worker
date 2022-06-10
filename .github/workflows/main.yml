@@ -30,4 +30,4 @@ jobs:
         uses: symfonycorp/security-checker-action@v2
 
       - name: "Unit tests"
-        uses: composer test
+        run: composer test
