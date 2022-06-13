@@ -24,7 +24,7 @@ class App
         try {
             ConfigurationHelper::hasConfiguration();
             $this->application->setDefaultCommand('run');
-        } catch (SetupException $exception) {
+        } catch (SetupException) {
             $this->application->setDefaultCommand('setup');
         }
 

@@ -34,6 +34,10 @@
     }
   },
   "scripts": {
-    "test": "@php ./vendor/bin/phpunit tests"
+    "post-install-cmd": [
+      "composer bin box install"
+    ],
+    "test": "@php ./vendor/bin/phpunit tests",
+    "build": "./vendor/bin/box build"
   }
 }
