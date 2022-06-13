@@ -27,8 +27,8 @@ class RunCommand extends Command
     const STATUS_KO = 'KO';
 
     private HttpClientInterface $httpClient;
-    private readonly array $credentials;
-    private readonly ImmutableXClient $immutableXClient;
+    private array $credentials;
+    private ImmutableXClient $immutableXClient;
 
     private SymfonyStyle $io;
 
