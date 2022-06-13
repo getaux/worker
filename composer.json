@@ -38,6 +38,6 @@
       "composer bin box install"
     ],
     "test": "@php ./vendor/bin/phpunit tests",
-    "build": "./vendor/bin/box build"
+    "compile": "./vendor/bin/box compile"
   }
 }

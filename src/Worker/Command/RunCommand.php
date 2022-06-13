@@ -12,6 +12,7 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\HttpClient\HttpClient;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 use Worker\Client\ImmutableXClient;
+use Worker\Exception\SetupException;
 use Worker\Helper\ConfigurationHelper;
 
 #[AsCommand(name: 'run')]
@@ -33,13 +34,7 @@ class RunCommand extends Command
 
     public function __construct()
     {
-        $this->credentials = ConfigurationHelper::readConfiguration();
         $this->httpClient = HttpClient::create();
-
-        $this->immutableXClient = new ImmutableXClient(
-            $this->credentials['public_key'],
-            $this->credentials['private_key']
-        );
 
         parent::__construct();
     }
@@ -53,7 +48,19 @@ class RunCommand extends Command
     {
         $this->io = new SymfonyStyle($input, $output);
 
-        return $this->runProcess();
+        try {
+            ConfigurationHelper::hasConfiguration();
+            $this->credentials = ConfigurationHelper::readConfiguration();
+
+            $this->immutableXClient = new ImmutableXClient(
+                $this->credentials['public_key'],
+                $this->credentials['private_key']
+            );
+
+            return $this->runProcess();
+        } catch (SetupException) {
+            return Command::FAILURE;
+        }
     }
 
     private function runProcess(): int

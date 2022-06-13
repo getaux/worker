@@ -24,7 +24,7 @@
 
 ## Build locally
 
-- `composer build`
+- `composer compile`
 
 ## Setup
 
