@@ -74,7 +74,7 @@ class ConfigurationHelper
 
     public static function getFileName(): string
     {
-        return getenv('HOME') ? getenv('HOME') . '/.auctionx-config' : './.auctionx-config';
+        return getenv('HOME') ? getenv('HOME') . '/.auctionx/worker' : './.auctionx/worker';
     }
 
 }
