@@ -25,7 +25,7 @@ class ConfigurationHelper
         $fileName = self::getFileName();
 
         if (!is_dir(self::getConfigFolder())) {
-            mkdir(self::getConfigFolder());
+            mkdir(self::getConfigFolder(), 0777, true);
         }
 
         $handle = fopen($fileName, 'w+');
