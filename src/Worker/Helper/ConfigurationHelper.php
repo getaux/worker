@@ -24,6 +24,10 @@ class ConfigurationHelper
 
         $fileName = self::getFileName();
 
+        if (!is_dir(self::getConfigFolder())) {
+            mkdir(self::getConfigFolder());
+        }
+
         $handle = fopen($fileName, 'w+');
 
         if ($handle) {
@@ -75,6 +79,11 @@ class ConfigurationHelper
     public static function getFileName(): string
     {
         return getenv('HOME') ? getenv('HOME') . '/.auctionx/worker' : './.auctionx/worker';
+    }
+
+    public static function getConfigFolder(): string
+    {
+        return getenv('HOME') ? getenv('HOME') . '/.auctionx' : './.auctionx';
     }
 
 }
