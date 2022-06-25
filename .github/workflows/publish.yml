@@ -1,0 +1,31 @@
+name: Publish worker
+
+on: release
+
+jobs:
+  publish:
+    name: Publish worker
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: "Init repository"
+        uses: actions/checkout@v2
+
+      - name: "Setup PHP"
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.1'
+          tools: composer
+
+      - name: "Install dependencies"
+        run: composer install
+
+      - name: "Create PHAR file"
+        run: composer compile
+
+      - name: "Upload the PHAR to release"
+        uses: JasonEtco/upload-to-release@0.1
+        with:
+          args: build/auctionx-worker
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
