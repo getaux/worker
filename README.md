@@ -36,7 +36,7 @@
 ## Run
 
 - Start worker: `pm2 start ./auctionx-worker --watch`
-- Stop worker: `pm2 stop auctionx-worker stop`
+- Stop worker: `pm2 stop auctionx-worker`
 
 ## License
 

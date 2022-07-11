@@ -6,5 +6,4 @@ namespace Worker\Exception;
 
 class SetupException extends \Exception
 {
-
 }

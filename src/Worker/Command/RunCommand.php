@@ -18,13 +18,13 @@ use Worker\Helper\ConfigurationHelper;
 #[AsCommand(name: 'run')]
 class RunCommand extends Command
 {
-    const ALLOWED_TASKS = [
+    public const ALLOWED_TASKS = [
         'task-transfer-nft',
         'task-transfer-token',
     ];
 
-    const STATUS_OK = 'OK';
-    const STATUS_KO = 'KO';
+    public const STATUS_OK = 'OK';
+    public const STATUS_KO = 'KO';
 
     private HttpClientInterface $httpClient;
     private array $credentials;
@@ -87,7 +87,6 @@ class RunCommand extends Command
         }
 
         if (in_array($message['task'], self::ALLOWED_TASKS)) {
-
             $this->immutableXClient->setEnv($result['environment']);
 
             try {
@@ -102,10 +101,15 @@ class RunCommand extends Command
 
                 $this->postResponse($message['id'], (array)$response);
                 return Command::SUCCESS;
-
             } catch (\Exception $e) {
+                if (method_exists($e, 'getResponse')) {
+                    $error = (array)json_decode($e->getResponse()->getContent(false), true);
+                } else {
+                    $error = $e->getMessage();
+                }
+
                 // send errored process
-                $this->postResponse($message['id'], $e->getMessage(), self::STATUS_KO);
+                $this->postResponse($message['id'], $error, self::STATUS_KO);
                 return Command::FAILURE;
             }
         } else {

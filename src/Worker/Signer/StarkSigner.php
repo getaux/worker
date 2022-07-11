@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Worker\Signer;
 
 use BIP\BIP44;
+use BN\BN;
 use Elliptic\Curve\PresetCurve;
 use Elliptic\EC;
 use Elliptic\EC\KeyPair;
@@ -12,17 +13,16 @@ use kornrunner\Serializer\HexSignatureSerializer;
 
 class StarkSigner
 {
-    const DEFAULT_SIGNATURE_MESSAGE = 'Only sign this request if you’ve initiated an action with Immutable X.';
+    public const DEFAULT_SIGNATURE_MESSAGE = 'Only sign this request if you’ve initiated an action with Immutable X.';
 
-    const DEFAULT_ACCOUNT_APPLICATION = 'immutablex';
-    const DEFAULT_ACCOUNT_LAYER = 'starkex';
-    const DEFAULT_ACCOUNT_INDEX = '1';
+    public const DEFAULT_ACCOUNT_APPLICATION = 'immutablex';
+    public const DEFAULT_ACCOUNT_LAYER = 'starkex';
+    public const DEFAULT_ACCOUNT_INDEX = '1';
 
     public function __construct(
         private readonly string $publicAddress,
         private readonly string $privateKey,
-    )
-    {
+    ) {
     }
 
     public function signMessage(string $message): string
@@ -68,8 +68,8 @@ class StarkSigner
         $sign = $hexSignature->parse($bin);
 
         return [
-            'r' => '0x' . gmp_strval($sign->getR(), 16),
-            's' => '0x' . gmp_strval($sign->getS(), 16),
+            'r' => '0x' . str_pad(gmp_strval($sign->getR(), 16), 64, '0', STR_PAD_LEFT),
+            's' => '0x' . str_pad(gmp_strval($sign->getS(), 16), 64, '0', STR_PAD_LEFT),
         ];
     }
 
@@ -84,9 +84,15 @@ class StarkSigner
 
     public function grindKey(string $starkDerivativeKey): string
     {
-        $key = substr($starkDerivativeKey, 2) . '00';
+        $bin = substr($starkDerivativeKey, 2) . '00';
 
-        return substr(hash('sha256', (string)hex2bin($key)), 1);
+        $bigNumber = new BN(hash('sha256', (string)hex2bin($bin)), 16);
+        $newBigNumber = $bigNumber->mod(new BN(
+            '08000000 00000010 ffffffff ffffffff b781126d cae7b232 1e66a241 adc64d2f',
+            16
+        ));
+
+        return substr($newBigNumber->toString(16), 1);
     }
 
     public function getStarkSignature(KeyPair $keyPair, string $message): string

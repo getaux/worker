@@ -84,4 +84,19 @@ class StarkSignerTest extends TestCase
             $signature
         );
     }
+
+    public function testSpecialCase(): void
+    {
+        $starkNetSigner = new StarkSigner(
+            '0x0DCc8801077bb9c8D874F84D07924ef91d6f3574',
+            '14db7cc631abaada08aef3d3166fde869a7274ef241784e7972cdf10125e94df'
+        );
+
+        $signature = $starkNetSigner->signMessage('53e512d3c4b9e5ec116324ce19a7dfa70b6a54c94b928dc50e4d5d1482c1b15');
+
+        $this->assertSame(
+            '0x07ebcdd0792e41eff489effbe2475502f7c5c87a58a456558d106c26e172e11f00dbefd66fa8e9275c092e06446b9efb1929a32a913cc67a7e78638b31004132',
+            $signature
+        );
+    }
 }

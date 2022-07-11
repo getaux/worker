@@ -19,8 +19,7 @@ class ImmutableXClient
     public function __construct(
         private readonly string $publicKey,
         private readonly string $privateKey,
-    )
-    {
+    ) {
         $this->httpClient = HttpClient::create();
     }
 

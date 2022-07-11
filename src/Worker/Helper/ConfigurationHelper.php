@@ -13,8 +13,7 @@ class ConfigurationHelper
         string $apiKey,
         string $publicKey,
         string $privateKey
-    ): bool
-    {
+    ): bool {
         $credentials = [
             'api_url' => $apiEndpoint,
             'api_key' => $apiKey,
@@ -85,5 +84,4 @@ class ConfigurationHelper
     {
         return getenv('HOME') ? getenv('HOME') . '/.auctionx' : './.auctionx';
     }
-
 }
