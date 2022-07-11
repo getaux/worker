@@ -87,6 +87,9 @@ class RunCommand extends Command
         }
 
         if (in_array($message['task'], self::ALLOWED_TASKS)) {
+
+            $this->immutableXClient->setEnv($result['environment']);
+
             try {
                 switch ($message['task']) {
                     case 'task-transfer-nft':

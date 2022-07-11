@@ -14,6 +14,8 @@ class ImmutableXClient
 {
     private HttpClientInterface $httpClient;
 
+    private string $env = 'prod';
+
     public function __construct(
         private readonly string $publicKey,
         private readonly string $privateKey,
@@ -22,9 +24,14 @@ class ImmutableXClient
         $this->httpClient = HttpClient::create();
     }
 
+    public function setEnv(string $env): void
+    {
+        $this->env = $env;
+    }
+
     public function transferNft(array $payload): array
     {
-        $response = $this->httpClient->request('POST', 'https://api.x.immutable.com/v1/signable-transfer-details', [
+        $response = $this->httpClient->request('POST', $this->getIMXEndpoint() . '/v1/signable-transfer-details', [
             'json' => [
                 'amount' => '1',
                 'receiver' => $payload['recipient'],
@@ -55,7 +62,7 @@ class ImmutableXClient
             $tokenData['token_address'] = TokenHelper::getTokenContract($payload['token']['token_type']);
         }
 
-        $response = $this->httpClient->request('POST', 'https://api.x.immutable.com/v1/signable-transfer-details', [
+        $response = $this->httpClient->request('POST', $this->getIMXEndpoint() . '/v1/signable-transfer-details', [
             'json' => [
                 'amount' => $payload['token']['quantity'],
                 'receiver' => $payload['recipient'],
@@ -80,7 +87,7 @@ class ImmutableXClient
         $starkNetSigner = new StarkSigner($this->publicKey, $this->privateKey);
         $starkSignature = $starkNetSigner->signMessage($resultSignable['payload_hash']);
 
-        $response = $this->httpClient->request('POST', 'https://api.x.immutable.com/v1/transfers', [
+        $response = $this->httpClient->request('POST', $this->getIMXEndpoint() . '/v1/transfers', [
             'headers' => [
                 'x-imx-eth-address' => $this->publicKey,
                 'x-imx-eth-signature' => $ethereumSignature,
@@ -99,5 +106,10 @@ class ImmutableXClient
         ]);
 
         return $response->toArray();
+    }
+
+    private function getIMXEndpoint(): string
+    {
+        return $this->env === 'dev' ? 'https://api.ropsten.x.immutable.com' : 'https://api.x.immutable.com';
     }
 }
