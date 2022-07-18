@@ -19,8 +19,11 @@ use Worker\Helper\ConfigurationHelper;
 class RunCommand extends Command
 {
     public const ALLOWED_TASKS = [
+        'task-refund-bid',
+        'task-refund-nft',
         'task-transfer-nft',
-        'task-transfer-token',
+        'task-payment',
+        'task-payment-fees',
     ];
 
     public const STATUS_OK = 'OK';
@@ -34,7 +37,11 @@ class RunCommand extends Command
 
     public function __construct()
     {
-        $this->httpClient = HttpClient::create();
+        $this->httpClient = HttpClient::create([
+            'headers' => [
+                'User-Agent' => 'AuctionX Worker'
+            ]
+        ]);
 
         parent::__construct();
     }
@@ -91,10 +98,13 @@ class RunCommand extends Command
 
             try {
                 switch ($message['task']) {
+                    case 'task-refund-nft':
                     case 'task-transfer-nft':
                         $response = $this->immutableXClient->transferNft($message['body']);
                         break;
-                    case 'task-transfer-token':
+                    case 'task-refund-bid':
+                    case 'task-payment':
+                    case 'task-payment-fees':
                         $response = $this->immutableXClient->transferToken($message['body']);
                         break;
                 }
